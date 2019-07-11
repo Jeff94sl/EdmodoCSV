@@ -101,6 +101,7 @@
             // 
             // DGV
             // 
+            this.DGV.AllowDrop = true;
             this.DGV.AllowUserToAddRows = false;
             this.DGV.AllowUserToDeleteRows = false;
             this.DGV.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -111,6 +112,8 @@
             this.DGV.ReadOnly = true;
             this.DGV.Size = new System.Drawing.Size(687, 345);
             this.DGV.TabIndex = 3;
+            this.DGV.DragDrop += new System.Windows.Forms.DragEventHandler(this.DGV_DragDrop);
+            this.DGV.DragEnter += new System.Windows.Forms.DragEventHandler(this.DGV_DragEnter);
             // 
             // Main
             // 

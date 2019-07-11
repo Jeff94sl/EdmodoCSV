@@ -51,7 +51,7 @@ namespace Edmodo_Csv
                     Tb.Columns.Add(new DataColumn(Encabezado));
                 }
                 Tb.Columns.Add("NF");
-                for (int I = 1; I <= Lineas.Length; I++)
+                for (int I = 1; I < Lineas.Length; I++)
                 {
                     string[] Data = Lineas[I].Split(',');
                     int ColumnIndex = 0;
@@ -85,42 +85,8 @@ namespace Edmodo_Csv
                     
                     Row["NF"] = Su.Sum();
                     Tb.Rows.Add(Row);
-                    DGV.DataSource = Tb;
                 }
-            }
-        }
-
-        public void OldCsvtoDatagridView(string Csv)
-        {
-            DataTable Tb = new DataTable();
-            string[] Lineas = File.ReadAllLines(Csv);
-            DataRow Row;
-            if (Lineas.Length > 0)
-            {
-                string PrimerLinea = Lineas[0];
-
-                string[] Etiquetas = PrimerLinea.Split(',');
-
-                foreach (string Encabezado in Etiquetas)
-                {
-                    Tb.Columns.Add(new DataColumn(Encabezado));
-                }
-                Tb.Columns.Add("NF");
-                for (int I = 1; I < Lineas.Length; I++)
-                {
-                    string[] Data = Lineas[I].Split(',');
-                    int ColumnIndex = 0;
-                    Row = Tb.NewRow();
-                    List<int> Su = new List<int>();
-                    foreach (string Datah in Etiquetas)
-                    {
-                        Row[Datah] = Data[ColumnIndex++];
-
-                    }
-
-                    Tb.Rows.Add(Row);
-                    DGV.DataSource = Tb;
-                }
+                DGV.DataSource = Tb;
             }
         }
         public void Exportar()
@@ -161,7 +127,8 @@ namespace Edmodo_Csv
 
                     }
                     wb.Worksheet(1).Columns().AdjustToContents();
-                    Guardar.FileName = Abrir.FileName;
+                    string file = Abrir.SafeFileName.Substring(0,Abrir.SafeFileName.Length - 4);
+                    Guardar.FileName = file;
                     if (Guardar.ShowDialog() == DialogResult.OK)
                     {
                         wb.SaveAs(Guardar.FileName);
@@ -180,6 +147,21 @@ namespace Edmodo_Csv
         {
             Acerca Ac = new Acerca();
             Ac.ShowDialog();
+        }
+
+        private void DGV_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] A = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string i in A)
+            {
+                CsvtoDatagridView(i);
+            }
+            //CsvtoDatagridView();
+        }
+
+        private void DGV_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
         }
     }
 }
